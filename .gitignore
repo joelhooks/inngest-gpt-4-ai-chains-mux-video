@@ -19,6 +19,7 @@ next-env.d.ts
 
 # production
 /build
+.env.production
 
 # misc
 .DS_Store
@@ -26,6 +27,7 @@ next-env.d.ts
 /.idea/
 .sanity/
 .partykit/
+.turbo/
 
 # debug
 npm-debug.log*
