@@ -14,7 +14,7 @@ export async function promptStep({requestId, promptMessages}: PromptStepOptions)
   const response = await openai.createChatCompletion({
     messages: promptMessages,
     stream: true,
-    model: 'gpt-4'
+    model: env.OPENAI_MODEL_ID
   })
 
   if (response.status >= 400) {

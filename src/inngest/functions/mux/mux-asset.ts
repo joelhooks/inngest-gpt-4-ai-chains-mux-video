@@ -1,6 +1,7 @@
 import {inngest} from "@/inngest/inngest.server";
 import {MUX_WEBHOOK_EVENT} from "@/inngest/events/mux-webhook";
 import {env} from "@/env.mjs";
+import {AI_WRITING_REQUESTED_EVENT} from "@/inngest/events";
 
 export const muxVideoAssetCreated = inngest.createFunction(
   {id: `mux-video-asset-created`, name: 'Mux Video Asset Created'},
@@ -46,6 +47,16 @@ export const muxVideoAssetTrackReady = inngest.createFunction(
       const trackId = muxAsset.tracks.filter((track: { type: string, status: string }) => track.type === 'text' && track.status === 'ready')[0]?.id
       const response = await fetch(`https://stream.mux.com/${playbackId}/text/${trackId}.vtt`)
       return response.text()
+    })
+
+    await step.sendEvent('send transcript to gpt-4 to summarize', {
+      name: AI_WRITING_REQUESTED_EVENT,
+      data: {
+        requestId: muxAsset.id,
+        input: {
+          input: transcript
+        }
+      }
     })
 
     return event.data.muxWebhookEvent.data

@@ -36,6 +36,11 @@ export const env = createEnv({
     INNGEST_SIGNING_KEY: z.string(),
     MUX_SECRET_KEY: z.string(),
     MUX_ACCESS_TOKEN_ID: z.string(),
+    OPENAI_MODEL_ID: z.string(),
+    OPENAI_EMBEDDINGS_MODEL: z.string(),
+    PINECONE_API_KEY: z.string(),
+    PINECONE_ENVIRONMENT: z.string(),
+    PINECONE_INDEX: z.string(),
   },
 
   /**
@@ -67,6 +72,11 @@ export const env = createEnv({
     NEXT_PUBLIC_PARTY_KIT_URL: process.env.NEXT_PUBLIC_PARTY_KIT_URL,
     MUX_ACCESS_TOKEN_ID: process.env.MUX_ACCESS_TOKEN_ID,
     MUX_SECRET_KEY: process.env.MUX_SECRET_KEY,
+    OPENAI_MODEL_ID: process.env.OPENAI_MODEL_ID,
+    OPENAI_EMBEDDINGS_MODEL: process.env.OPENAI_EMBEDDINGS_MODEL,
+    PINECONE_API_KEY: process.env.PINECONE_API_KEY,
+    PINECONE_ENVIRONMENT: process.env.PINECONE_ENVIRONMENT,
+    PINECONE_INDEX: process.env.PINECONE_INDEX,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

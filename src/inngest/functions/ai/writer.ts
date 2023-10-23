@@ -8,35 +8,27 @@ export const writeAnEmail = inngest.createFunction(
   {event: AI_WRITING_REQUESTED_EVENT},
   async ({event, step}) => {
 
-    const systemPrompt: string = event.data.input.instructions || `You craft thoughtful phrases for customer emails`
+    const systemPrompt: string = event.data.input.instructions || `You craft thoughtful titles and descriptive summaries
+    of technical video transcripts through a series of semi-adversarial interactions with a writer and editors.`
 
     const primarySystemWriterPrompt = `
     # Instructions
-    Pause. Take a deep breath and think. 
-    Below is an email template. Template items for you to fill in are surrounded by brackets like this {{item}}
+    Pause. Take a deep breath and think. You are the technical writer. You are writing a title and a summary description
+    of a technical video transcript. You are writing a clown college. 
     
+    * conversational and focused on the reader
+    * SEO is important for the title
+    * the description should summarize the video transcript
+    * the title should summarize the description and transcript further
+    * the title is not to exceed 90 characters
+    * do **not** use any emojis
+    * do **not** use colons \`:\` or parentheses \`( )\`
+    * if you are missing information, do not include generic information
+    * do **not** use phrases like "this video" or "in this video" or "the speaker"
+    * do not reference "the video"
+    
+    ## Video Transcript
     ${event.data.input.input}
-    
-    * be casual and conversational
-    * generate text for the template items. 
-    * Do not include additional template items or 
-    * do not include brackets in the response
-    * if you are missing information, include generic information
-    * if you don't have a name, use phrasing that doesn't require a name but isn't rude and impersonal
-    
-    Template:
-    {{Greeting}},
-    
-    Congrats on completing the work. We are so excited to have you on board.
-    
-    {{personalized}}
-    
-    {{holiday cheer}}
-    
-    {{termination notice}}
-    
-    Cheers,
-    Joel
    
     `
 
@@ -50,13 +42,14 @@ export const writeAnEmail = inngest.createFunction(
       },
     )
 
-    const editorPrompt = `You are the editor. You are reviewing the first draft of the email. Provide 
+    const editorPrompt = `You are the editor. You are reviewing the first draft a title and description summary of a video transcript. Provide 
     structured feedback to the writer. Be specific. Be concise. Most of all be useful.
     
     - you have all the data, don't assume more data exists outside of the conversation
     - feedback should be in bullet points
     - keep the initial instructions in mind
-    - don't suggest generic greetings
+    - don't suggest generic crap
+    - you are extremely biased against phrases like "this video" or "in this video" or "the speaker" or referencing the video or speaker as subjects
     
      ${event.data.input.editor}`
 
@@ -80,7 +73,7 @@ export const writeAnEmail = inngest.createFunction(
     `
 
     const authorRevisionsResponse: ChatCompletionRequestMessage = await step.run(
-      'send editor feedback to writer',
+      'send writer for final draft',
       async () => {
         return promptStep({requestId: event.data.requestId, promptMessages: [
             {role: 'system', content: systemPrompt},
