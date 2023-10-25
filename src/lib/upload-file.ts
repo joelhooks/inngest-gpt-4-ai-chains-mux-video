@@ -1,24 +1,22 @@
 import axios from 'axios'
 
 
-export async function uploadToS3({
+export async function uploadToMux({
   fileContents,
   onUploadProgress = () => {},
 }: {
-  fileType: string
   fileContents: File
   onUploadProgress: (progressEvent: {loaded: number; total?: number}) => void
 }) {
   const presignedPostUrl = await getPresignedPostUrl()
 
-  console.log('presignedPostUrl', presignedPostUrl)
-
+  // we use axios because it does XHR request and gives us progress
   await axios.put(presignedPostUrl.url, fileContents, {
     headers: {'Content-Type': 'application/octet-stream'},
     onUploadProgress,
   })
 
-  return 'done'
+  return presignedPostUrl
 }
 
 async function getPresignedPostUrl() {

@@ -32,6 +32,7 @@ export const env = createEnv({
     SANITY_STUDIO_PROJECT_ID: z.string(),
     SANITY_STUDIO_DATASET: z.string(),
     SANITY_STUDIO_API_VERSION: z.string(),
+    SANITY_API_TOKEN: z.string(),
     INNGEST_EVENT_KEY: z.string(),
     INNGEST_SIGNING_KEY: z.string(),
     MUX_SECRET_KEY: z.string(),
@@ -41,6 +42,8 @@ export const env = createEnv({
     PINECONE_API_KEY: z.string(),
     PINECONE_ENVIRONMENT: z.string(),
     PINECONE_INDEX: z.string(),
+    GITHUB_CLIENT_ID: z.string(),
+    GITHUB_CLIENT_SECRET: z.string(),
   },
 
   /**
@@ -66,6 +69,7 @@ export const env = createEnv({
     SANITY_STUDIO_PROJECT_ID: process.env.SANITY_STUDIO_PROJECT_ID,
     SANITY_STUDIO_DATASET: process.env.SANITY_STUDIO_DATASET,
     SANITY_STUDIO_API_VERSION: process.env.SANITY_STUDIO_API_VERSION,
+    SANITY_API_TOKEN: process.env.SANITY_API_TOKEN,
     INNGEST_EVENT_KEY: process.env.INNGEST_EVENT_KEY,
     INNGEST_SIGNING_KEY: process.env.INNGEST_SIGNING_KEY,
     NEXT_PUBLIC_PARTYKIT_ROOM_NAME: process.env.NEXT_PUBLIC_PARTYKIT_ROOM_NAME,
@@ -77,6 +81,8 @@ export const env = createEnv({
     PINECONE_API_KEY: process.env.PINECONE_API_KEY,
     PINECONE_ENVIRONMENT: process.env.PINECONE_ENVIRONMENT,
     PINECONE_INDEX: process.env.PINECONE_INDEX,
+    GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
+    GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

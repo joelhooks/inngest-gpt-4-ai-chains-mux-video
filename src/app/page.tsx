@@ -19,17 +19,21 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { Label } from "@/components/ui/label"
 import {TabEdit} from "./_components/tab-edit";
-import VideoUploader from "@/module-builder/video-uploader";
+import VideoUploader from "@/components/video-uploader";
+import {getServerAuthSession} from "@/server/auth";
+import {getAbility} from "@/lib/ability";
 
 export const metadata: Metadata = {
-  title: "Playground",
-  description: "The OpenAI Playground built using the components.",
+  title: "Media Processing Workflow",
+  description: "Combines the power of OpenAI's API with the flexibility of a custom workflow in Inngest.",
 }
 
-export default function PlaygroundPage() {
-  return (
+export default async function PlaygroundPage() {
+  const session = await getServerAuthSession()
+  const ability = getAbility({user: session?.user})
+
+  return ability.can('view', 'Anything') ? (
     <>
       <div className="md:hidden">
         <Image
@@ -249,7 +253,7 @@ export default function PlaygroundPage() {
                 <TemperatureSelector defaultValue={[0.56]} />
                 <MaxLengthSelector defaultValue={[256]} />
                 <TopPSelector defaultValue={[0.9]} />
-                <VideoUploader />
+
               </div>
               <div className="md:order-1">
                 <TabEdit />
@@ -293,5 +297,5 @@ export default function PlaygroundPage() {
         </Tabs>
       </div>
     </>
-  )
+  ) : <div>Nope</div>
 }

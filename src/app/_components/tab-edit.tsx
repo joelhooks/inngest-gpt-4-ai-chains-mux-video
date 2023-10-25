@@ -9,6 +9,7 @@ import {customAlphabet} from "nanoid";
 import * as React from "react";
 
 import {ChatResponse} from "./chat-response";
+import VideoUploader from "@/components/video-uploader";
 const nanoid = customAlphabet(
   "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
   7
@@ -18,6 +19,7 @@ const nanoid = customAlphabet(
 export function TabEdit() {
   return (
     <TabsContent value="edit" className="mt-0 border-0 p-0">
+      <div className="grid h-full gap-6 lg:grid-cols-2">
       <form action={async (event) => {
         'use server'
         await inngest.send({
@@ -29,7 +31,7 @@ export function TabEdit() {
         })
       }}>
         <div className="flex flex-col space-y-4">
-          <div className="grid h-full gap-6 lg:grid-cols-2">
+
             <div className="flex flex-col space-y-4">
               <div className="flex flex-col space-y-2">
                 <Label htmlFor="instructions">System Instructions</Label>
@@ -61,8 +63,8 @@ export function TabEdit() {
                 placeholder="We is going to the market."
               />
             </div>
-            <ChatResponse />
-          </div>
+
+
           <div className="flex items-center space-x-2">
             <Button type='submit'>Submit</Button>
             <Button variant="secondary" type='button'>
@@ -72,6 +74,11 @@ export function TabEdit() {
           </div>
         </div>
       </form>
+      <div>
+        <VideoUploader />
+        <ChatResponse />
+      </div>
+      </div>
     </TabsContent>
   )
 }

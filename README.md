@@ -1,4 +1,4 @@
-# Generated Conversations with GPT-4 Chains using Inngest 🤖
+# Media Processing with GPT-4 Chains using Inngest 🤖
 
 This is an application that is primarily meant to be ran locally (for now) 
 as a way to explore and experiment with gpt-4 prompt chaining as a "tool for 
@@ -13,6 +13,8 @@ It's got a lot of moving parts 😅:
 - Email sending
 - Websockets
 - CMS
+
+![diagram of the stack](./public/stack.png)
 
 As a basis we used [T3 Stack](https://create.t3.gg/) to bootstrap the 
 project using the NextAuth.js, Tailwind, tRPC, and Drizzle options.
