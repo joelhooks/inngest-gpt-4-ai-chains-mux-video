@@ -31,6 +31,8 @@ export const metadata: Metadata = {
 
 export default async function PlaygroundPage() {
   const session = await getServerAuthSession()
+
+  console.log({session})
   const ability = getAbility({user: session?.user})
 
   return ability.can('view', 'Anything') ? (

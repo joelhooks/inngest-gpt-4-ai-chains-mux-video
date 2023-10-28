@@ -2,12 +2,13 @@ import {AbilityBuilder, CreateAbility, createMongoAbility, MongoAbility} from "@
 
 type Abilities =
   | ['view', 'Anything']
+  | ['upload', 'Media']
 
 type AppAbility = MongoAbility<Abilities>
 
 const createAppAbility = createMongoAbility as CreateAbility<AppAbility>
 
-type GetAbilityOptions = {user?:{id:string}}
+type GetAbilityOptions = {user?:{id:string, role?: string}}
 
 /**
  * serializable CASL rules object
@@ -18,8 +19,9 @@ type GetAbilityOptions = {user?:{id:string}}
 export function getAbilityRules(options: GetAbilityOptions = {}) {
   const {can, rules} = new AbilityBuilder<AppAbility>(createMongoAbility)
 
-  if (options.user) {
+  if (options.user?.role === 'admin') {
     can('view', 'Anything')
+    can('upload', 'Media')
   }
 
   return rules

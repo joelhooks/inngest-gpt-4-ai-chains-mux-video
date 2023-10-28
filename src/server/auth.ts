@@ -8,7 +8,8 @@ import GithubProvider from "next-auth/providers/github";
 
 import { env } from "@/env.mjs";
 import { db } from "@/server/db";
-import { mysqlTable } from "@/server/db/schema";
+import {mysqlTable, users} from "@/server/db/schema";
+import {eq} from "drizzle-orm";
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -20,14 +21,13 @@ declare module "next-auth" {
   interface Session extends DefaultSession {
     user: {
       id: string;
-      // ...other properties
-      // role: UserRole;
+      role?: 'admin' | 'user';
     } & DefaultSession["user"];
   }
 
   interface User {
     // ...other properties
-    // role: UserRole;
+    role?: 'admin' | 'user';
   }
 }
 
@@ -38,13 +38,19 @@ declare module "next-auth" {
  */
 export const authOptions: NextAuthOptions = {
   callbacks: {
-    session: ({ session, user }) => ({
-      ...session,
-      user: {
-        ...session.user,
-        id: user.id,
-      },
-    }),
+    session: async ({ session, user }) => {
+      const dbUser = await db.query.users.findFirst({
+        where: (users, { eq }) => eq(users.id, user.id),
+      })
+      return ({
+        ...session,
+        user: {
+          ...session.user,
+          id: user.id,
+          role: dbUser?.role || user,
+        },
+      })
+    },
   },
   adapter: DrizzleAdapter(db, mysqlTable),
   providers: [

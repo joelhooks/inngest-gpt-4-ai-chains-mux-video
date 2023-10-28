@@ -2,7 +2,7 @@ import { relations, sql } from "drizzle-orm";
 import {
   bigint,
   index,
-  int,
+  int, mysqlEnum,
   mysqlTableCreator,
   primaryKey,
   text,
@@ -22,6 +22,7 @@ export const mysqlTable = mysqlTableCreator((name) => `inngest-gpt_${name}`);
 export const users = mysqlTable("user", {
   id: varchar("id", { length: 255 }).notNull().primaryKey(),
   name: varchar("name", { length: 255 }),
+  role: mysqlEnum('role', ['user', 'admin']).default('user'),
   email: varchar("email", { length: 255 }).notNull(),
   emailVerified: timestamp("emailVerified", {
     mode: "date",

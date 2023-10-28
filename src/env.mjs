@@ -44,6 +44,11 @@ export const env = createEnv({
     PINECONE_INDEX: z.string(),
     GITHUB_CLIENT_ID: z.string(),
     GITHUB_CLIENT_SECRET: z.string(),
+    DEEPGRAM_API_KEY: z.string(),
+    AWS_VIDEO_UPLOAD_BUCKET: z.string(),
+    AWS_VIDEO_UPLOAD_REGION: z.string(),
+    AWS_VIDEO_UPLOAD_ACCESS_KEY_ID: z.string(),
+    AWS_VIDEO_UPLOAD_SECRET_ACCESS_KEY: z.string(),
   },
 
   /**
@@ -83,6 +88,11 @@ export const env = createEnv({
     PINECONE_INDEX: process.env.PINECONE_INDEX,
     GITHUB_CLIENT_ID: process.env.GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET: process.env.GITHUB_CLIENT_SECRET,
+    DEEPGRAM_API_KEY: process.env.DEEPGRAM_API_KEY,
+    AWS_VIDEO_UPLOAD_BUCKET: process.env.AWS_VIDEO_UPLOAD_BUCKET,
+    AWS_VIDEO_UPLOAD_REGION: process.env.AWS_VIDEO_UPLOAD_REGION,
+    AWS_VIDEO_UPLOAD_ACCESS_KEY_ID: process.env.AWS_VIDEO_UPLOAD_ACCESS_KEY_ID,
+    AWS_VIDEO_UPLOAD_SECRET_ACCESS_KEY: process.env.AWS_VIDEO_UPLOAD_SECRET_ACCESS_KEY
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

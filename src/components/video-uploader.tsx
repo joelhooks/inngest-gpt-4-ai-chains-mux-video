@@ -1,7 +1,7 @@
 'use client'
 
 import * as React from 'react'
-import {uploadToMux} from '@/lib/upload-file'
+import {uploadToMux, uploadToS3} from '@/lib/upload-file'
 import {Button} from "@/components/ui/button";
 import {Input} from '@/components/ui/input';
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
@@ -11,6 +11,7 @@ import {zodResolver} from "@hookform/resolvers/zod"
 import {Progress} from "@/components/ui/progress"
 import {usePathname, useRouter, useSearchParams} from 'next/navigation'
 import {useCallback} from "react";
+import {api} from "@/trpc/react";
 
 
 const FormSchema = z.object({
@@ -25,6 +26,8 @@ const VideoUploader = () => {
       video: null,
     }
   })
+
+  const {mutate: createVideoResource} = api.videoResource.create.useMutation()
 
 
   const searchParams = useSearchParams()
@@ -45,8 +48,9 @@ const VideoUploader = () => {
   const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
       if (data.video) {
-        const {id} = await uploadToMux({
+        const presignedUrl = await uploadToS3({
           fileContents: data.video,
+          fileType: data.video.type,
           onUploadProgress: (progressEvent) => {
             setFormProgress((progressEvent.total
               ? (progressEvent.loaded / progressEvent.total) * 100
@@ -54,7 +58,10 @@ const VideoUploader = () => {
           },
         })
 
-        router.push(pathname + '?' + createQueryString('muxUploadId', id))
+        createVideoResource({
+          s3Url: presignedUrl.publicUrl,
+          fileName: presignedUrl.filename
+        })
 
         form.reset()
       }

@@ -4,6 +4,14 @@ This is an application that is primarily meant to be ran locally (for now)
 as a way to explore and experiment with gpt-4 prompt chaining as a "tool for 
 thought"""
 
+## TODO
+
+- [ ] Model prompt chains in Sanity
+- [ ] Use Deepgram for transcripts
+- [ ] Upload media to S3
+- [ ] Tagging
+- [ ] Use egghead title/description/transcript data for fine-tuning/embedding
+
 It's got a lot of moving parts 😅:
 
 - A database to store our data

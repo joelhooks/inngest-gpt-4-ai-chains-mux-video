@@ -7,5 +7,5 @@ export default {
   dbCredentials: {
     connectionString: env.DATABASE_URL,
   },
-  tablesFilter: ["inngest-gpt-4-ai-chains-mux-video_*"],
+  tablesFilter: ["inngest-gpt_*"],
 } satisfies Config;
