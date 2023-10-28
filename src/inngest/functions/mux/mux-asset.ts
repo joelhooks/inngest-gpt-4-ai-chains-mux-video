@@ -1,7 +1,7 @@
 import {inngest} from "@/inngest/inngest.server";
 import {MUX_WEBHOOK_EVENT} from "@/inngest/events/mux-webhook";
 import {env} from "@/env.mjs";
-import {AI_WRITING_REQUESTED_EVENT} from "@/inngest/events";
+import {AI_WRITING_COMPLETED_EVENT, AI_WRITING_REQUESTED_EVENT} from "@/inngest/events";
 import {sanityMutation, sanityQuery} from "@/server/sanity.server";
 
 
@@ -9,8 +9,6 @@ export const muxVideoAssetCreated = inngest.createFunction(
   {id: `mux-video-asset-created`, name: 'Mux Video Asset Created'},
   {event: MUX_WEBHOOK_EVENT, if: 'event.data.muxWebhookEvent.type == "video.asset.created"'},
   async ({event, step}) => {
-
-    console.log('muxVideoAssetCreated', event.data.muxWebhookEvent)
 
     const videoResource = await step.run('create the video resource in Sanity', async () => {
       return sanityMutation( [
@@ -32,7 +30,6 @@ export const muxVideoAssetReady = inngest.createFunction(
   {id: `mux-video-asset-ready`, name: 'Mux Video Asset Ready'},
   {event: MUX_WEBHOOK_EVENT, if: 'event.data.muxWebhookEvent.type == "video.asset.ready"'},
   async ({event, step}) => {
-    console.log('muxVideoAssetReady', event.data.muxWebhookEvent)
     return event.data.muxWebhookEvent.data
   }
 )
@@ -67,8 +64,6 @@ export const muxVideoAssetTrackReady = inngest.createFunction(
       return response.text()
     })
 
-
-
     const videoResource = await step.run('get the video resource from Sanity', async () => {
       return await sanityQuery(`*[_type == "videoResource" && muxAssetId == "${muxAsset.id}"][0]`)
     })
@@ -93,12 +88,33 @@ export const muxVideoAssetTrackReady = inngest.createFunction(
     await step.sendEvent('send transcript to gpt-4 to summarize', {
       name: AI_WRITING_REQUESTED_EVENT,
       data: {
-        requestId: muxAsset.upload_id,
+        requestId: muxAsset.id,
         input: {
           input: transcript
         }
       }
     })
+
+    const writingResult = await step.waitForEvent('wait for the ai to write the title and text', {
+      event: AI_WRITING_COMPLETED_EVENT,
+      if: `event.data.muxWebhookEvent.data.asset_id == async.data.requestId`,
+      timeout: '1h',
+    })
+
+    if(videoResource && writingResult) {
+      await step.run('update the video resource in Sanity', async () => {
+        return await sanityMutation( [
+          {
+            "patch": {
+              "id": videoResource._id,
+              "set": {
+                "title": writingResult.data.result.title,
+              },
+            }
+          }
+        ])
+      })
+    }
 
     return event.data.muxWebhookEvent.data
   }

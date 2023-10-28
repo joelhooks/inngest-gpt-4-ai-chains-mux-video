@@ -70,7 +70,7 @@ export default {
       type: 'string',
     },
     defineField({
-      name: 'text',
+      name: 'transcript',
       title: 'Transcript Text',
       type: 'text',
     }),

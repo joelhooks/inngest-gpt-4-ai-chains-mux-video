@@ -28,6 +28,7 @@ next-env.d.ts
 .sanity/
 .partykit/
 .turbo/
+dist/
 
 # debug
 npm-debug.log*

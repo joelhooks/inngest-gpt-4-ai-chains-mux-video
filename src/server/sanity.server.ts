@@ -1,17 +1,8 @@
 import {createClient} from "@sanity/client";
 import {env} from "@/env.mjs";
 
-
-// export const sanityClient = createClient({
-//   projectId: env.SANITY_STUDIO_PROJECT_ID,
-//   dataset: env.SANITY_STUDIO_DATASET,
-//   useCdn: false,
-//   apiVersion: env.SANITY_STUDIO_API_VERSION,
-//   token: env.SANITY_API_TOKEN,
-// })
-
 export async function sanityMutation(mutations: any[]) {
-  return fetch(`https://${env.SANITY_STUDIO_PROJECT_ID}.api.sanity.io/v${env.SANITY_STUDIO_API_VERSION}/data/mutate/${env.SANITY_STUDIO_DATASET}`, {
+  return await fetch(`https://${env.SANITY_STUDIO_PROJECT_ID}.api.sanity.io/v${env.SANITY_STUDIO_API_VERSION}/data/mutate/${env.SANITY_STUDIO_DATASET}`, {
     method: 'post',
     headers: {
       'Content-type': 'application/json',
@@ -27,5 +18,8 @@ export async function sanityQuery(query: string) {
     headers: {
       Authorization: `Bearer ${env.SANITY_API_TOKEN}`
     }
-  }).then((response) => response.json())
+  }).then(async (response) => {
+    const {result} = await response.json()
+    return result
+  })
 }

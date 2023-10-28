@@ -1,12 +1,13 @@
-import OpenAI from 'openai'
+import {type ChatCompletionRequestMessage} from "openai-edge";
 
 export const AI_WRITING_COMPLETED_EVENT = 'ai/writing-completed'
 
 export type AIWritingRequestCompleted = {
     name: typeof AI_WRITING_COMPLETED_EVENT
     data: {
-        result?: string | null
-        fullPrompt: OpenAI.ChatCompletionMessage[]
+        requestId: string
+        result?: any
+        fullPrompt: ChatCompletionRequestMessage[]
     }
 }
 
