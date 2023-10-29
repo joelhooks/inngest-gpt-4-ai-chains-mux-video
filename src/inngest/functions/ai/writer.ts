@@ -2,6 +2,7 @@ import {inngest} from "@/inngest/inngest.server";
 import {AI_WRITING_COMPLETED_EVENT, AI_WRITING_REQUESTED_EVENT} from "@/inngest/events";
 import {type ChatCompletionRequestMessage} from "openai-edge";
 import {promptStep} from "@/lib/prompt-step";
+import {env} from "@/env.mjs";
 
 /**
  * TODO: migrate prompts to sanity
@@ -129,6 +130,20 @@ export const writeAnEmail = inngest.createFunction(
           ]
       }
     })
+
+    await step.run('announce draft completed', async () => {
+      await fetch(`${env.NEXT_PUBLIC_PARTY_KIT_URL}/party/${env.NEXT_PUBLIC_PARTYKIT_ROOM_NAME}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          body: formatCheck,
+          requestId: event.data.requestId,
+          name: 'ai.draft.completed',
+        }),
+      }).catch((e) => {
+        console.error(e);
+      })
+    })
+
 
     return {content: formatCheck, prompts: [
         {role: 'system', content: systemPrompt},

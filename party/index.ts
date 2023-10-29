@@ -21,7 +21,7 @@ export default class Server implements Party.Server {
   }
 
   async onRequest(_req: Party.Request) {
-    const messageBody: {requestId: string, body: string} = await _req.json();
+    const messageBody: {requestId: string, body: string, name: string} = await _req.json();
 
     this.party.broadcast(JSON.stringify(messageBody));
 

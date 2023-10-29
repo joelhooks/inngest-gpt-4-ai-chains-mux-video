@@ -30,10 +30,9 @@ export default async function PlaygroundPage() {
         <div className="container h-full py-6">
           <div className="grid h-full items-stretch gap-6 md:grid-cols-[1fr_200px]">
             <div className="md:order-1">
-              <div className="grid h-full gap-6 lg:grid-cols-2">
+
                 <VideoUploader />
-                <ChatResponse />
-              </div>
+
             </div>
           </div>
         </div>

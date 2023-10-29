@@ -5,15 +5,14 @@ import {getServerAuthSession} from "@/server/auth";
 import {getAbility} from "@/lib/ability";
 import {createTRPCRouter, publicProcedure} from "@/server/api/trpc";
 import {inngest} from "@/inngest/inngest.server";
-import {VIDEO_UPLOADED_EVENT} from "@/inngest/events/video-uploaded";
+import {AI_WRITING_REQUESTED_EVENT} from "@/inngest/events";
+import {sanityQuery} from "@/server/sanity.server";
 
-export const videoResourceRouter = createTRPCRouter({
-  create: publicProcedure
+export const postRouter = createTRPCRouter({
+  generate: publicProcedure
     .input(
       z.object({
-        s3Url: z.string(),
-        fileName: z.string().nullable(),
-        title: z.string().optional(),
+        requestId: z.string()
       }),
     )
     .mutation(async ({ctx, input}) => {
@@ -25,12 +24,15 @@ export const videoResourceRouter = createTRPCRouter({
         throw new Error('Unauthorized')
       }
 
+      const {transcript} = await sanityQuery(`*[_type == "videoResource" && _id == "${input.requestId}"][0]`)
+
       await inngest.send({
-        name: VIDEO_UPLOADED_EVENT,
+        name: AI_WRITING_REQUESTED_EVENT,
         data: {
-          originalMediaUrl: input.s3Url,
-          fileName: input.fileName || 'untitled',
-          title: input.title
+          requestId: input.requestId,
+          input: {
+            input: transcript
+          }
         },
       })
     })

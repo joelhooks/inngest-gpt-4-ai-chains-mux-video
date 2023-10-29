@@ -6,15 +6,16 @@ import usePartySocket from "partysocket/react";
 import {env} from "@/env.mjs";
 import {STREAM_COMPLETE} from "@/lib/streaming-chunk-publisher";
 
-export function ChatResponse() {
+export function ChatResponse(props: {requestId:string}) {
   const [messages, setMessages] = React.useState<{ requestId: string, body: string }[]>([])
   const socket = usePartySocket({
     room: env.NEXT_PUBLIC_PARTYKIT_ROOM_NAME,
     host: env.NEXT_PUBLIC_PARTY_KIT_URL,
     onMessage: (messageEvent) => {
-      const {body, requestId} = JSON.parse(messageEvent.data)
-      if(body !== STREAM_COMPLETE) {
-        setMessages((messages) => [...messages, {body, requestId}])
+      const messageData = JSON.parse(messageEvent.data)
+
+      if(messageData.body !== STREAM_COMPLETE && messageData.requestId === props.requestId) {
+        setMessages((messages) => [...messages, {body: messageData.body, requestId: messageData.requestId}])
       }
     }
   });

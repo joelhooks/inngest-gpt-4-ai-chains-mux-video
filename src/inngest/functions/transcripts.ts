@@ -129,6 +129,19 @@ export const transcriptReady = inngest.createFunction(
       })
     }
 
+    await step.run('send the transcript to the party', async () => {
+      await fetch(`${env.NEXT_PUBLIC_PARTY_KIT_URL}/party/${env.NEXT_PUBLIC_PARTYKIT_ROOM_NAME}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          body: event.data.transcript,
+          requestId: event.data.videoResourceId,
+          name: 'transcript.ready',
+        }),
+      }).catch((e) => {
+        console.error(e);
+      })
+    })
+
     return event.data
   }
 )

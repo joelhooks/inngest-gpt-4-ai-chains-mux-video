@@ -5,6 +5,9 @@ import sendEmail from "./schemas/actions/send-email";
 import slack from "./schemas/actions/slack";
 import filter from "./schemas/actions/filter";
 import videoResource from "./schemas/documents/videoResource";
+import authorType from "./schemas/documents/author";
+import postType from "./schemas/documents/post";
+import settingsType from "./schemas/settings";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   types: [
@@ -15,6 +18,7 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     delay,
     sendEmail,
     filter,
-    slack
+    slack,
+    authorType, postType, settingsType
   ],
 }

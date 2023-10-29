@@ -27,8 +27,6 @@ export const videoUploaded = inngest.createFunction(
 
       const muxOptions = getMuxOptions({url: event.data.originalMediaUrl, passthrough: event.data.fileName})
 
-      console.log({muxOptions})
-
       const response = await fetch(`${baseUrl}/video/v1/assets`, {
         headers: {
           Authorization: `Basic ${Buffer.from(`${env.MUX_ACCESS_TOKEN_ID}:${env.MUX_SECRET_KEY}`).toString('base64')}`,
