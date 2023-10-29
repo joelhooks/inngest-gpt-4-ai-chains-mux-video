@@ -70,7 +70,7 @@ const VideoUploader = () => {
     }
   }
   return (
-    <div className="grid gap-2 pt-2 ">
+    <div className="flex flex-col space-y-4">
       <Form {...form} >
         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-2">
           <FormField

@@ -68,6 +68,11 @@ export const authOptions: NextAuthOptions = {
       clientSecret: env.GITHUB_CLIENT_SECRET,
     })
   ],
+  pages: {
+    signIn: '/login',
+    error: '/error',
+    verifyRequest: '/check-your-email',
+  }
 };
 
 /**
