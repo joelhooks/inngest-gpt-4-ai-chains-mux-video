@@ -25,11 +25,11 @@ const FormSchema = z.object({
 
 const VideoUploader = () => {
   const [formProgress, setFormProgress] = React.useState(0)
-  const [messages, setMessages] = React.useState<{ requestId: string, body: string }[]>([])
   const [playbackId, setPlaybackId] = React.useState<string>('')
   const [requestId, setRequestId] = React.useState<string>('')
   const [generatedDraft, setGeneratedDraft] = React.useState<{title:string, description: string} | null>(null)
   const [transcriptReady, setTranscriptReady] = React.useState<boolean>(false)
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -39,7 +39,7 @@ const VideoUploader = () => {
 
   const {mutate: createVideoResource} = api.videoResource.create.useMutation()
   const {mutate: generatePost} = api.post.generate.useMutation()
-
+  const {mutate: createPost} = api.post.create.useMutation()
 
   const searchParams = useSearchParams()
   const router = useRouter()
@@ -100,6 +100,10 @@ const VideoUploader = () => {
       console.log('error is', err)
     }
   }
+
+  if(requestId) {
+    router.push(`${pathname}?${createQueryString('requestId', requestId)}`)
+  }
   return (
     <div className="grid h-full gap-6 lg:grid-cols-2">
     <div className="flex flex-col space-y-4">
@@ -143,12 +147,20 @@ const VideoUploader = () => {
           generatePost({
             requestId
           })
-        } }>Generate Post</Button>
+        } }>Generate Post Text</Button>
       )}
       {generatedDraft && (
         <div>
           <h2 className="text-2xl font-semibold">{generatedDraft.title}</h2>
           <ReactMarkdown>{generatedDraft.description}</ReactMarkdown>
+          <Button onClick={() => {
+            setGeneratedDraft(null)
+            createPost({
+              requestId,
+              title: generatedDraft.title,
+              body: generatedDraft.description
+            })
+          } }>Generate Post</Button>
         </div>
       )}
     </div>

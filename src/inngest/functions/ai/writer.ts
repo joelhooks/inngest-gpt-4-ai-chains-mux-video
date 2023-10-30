@@ -30,6 +30,7 @@ export const writeAnEmail = inngest.createFunction(
     * if you are missing information, do not include generic information
     * do **not** use phrases like "this video" or "in this video" or "the speaker"
     * do not reference "the video"
+    * don't use sensational words like "mastering" "ultimate" "master" in the title
     
 
     ## Video Transcript
@@ -55,6 +56,9 @@ export const writeAnEmail = inngest.createFunction(
     - keep the initial instructions in mind
     - don't suggest generic crap
     - you are extremely biased against phrases like "this video" or "in this video" or "the speaker" or referencing the video or speaker as subjects
+    - your response should be written as a prompt for gpt-4 to continue writing
+    - you are not a writer, you are an editor
+    - make sure the title and description are focused on the reader
 
      ${event.data.input.editor}`
 

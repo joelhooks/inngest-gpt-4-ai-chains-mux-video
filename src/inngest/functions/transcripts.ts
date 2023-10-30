@@ -1,11 +1,11 @@
+import {env} from "@/env.mjs";
+import z from 'zod'
 import {inngest} from "@/inngest/inngest.server";
 import {TRANSCRIPT_READY_EVENT, TRANSCRIPT_REQUESTED_EVENT} from "@/inngest/events/transcript-requested";
-import {env} from "@/env.mjs";
+import {MUX_SRT_READY_EVENT} from "@/inngest/events/mux-add-srt-to-asset"
 import {sanityMutation, sanityQuery} from "@/server/sanity.server";
 
 const deepgramUrl = `https://api.deepgram.com/v1/listen`
-
-import z from 'zod'
 
 export const VideoResourceSchema = z.object({
   _id: z.string().optional(),
@@ -83,49 +83,12 @@ export const transcriptReady = inngest.createFunction(
         ])
       })
 
-      const muxAsset = await step.run('get the mux asset', async () => {
-        const assetId = videoResource.muxAssetId
-        const {data} = await fetch(`https://api.mux.com/video/v1/assets/${assetId}`, {
-          headers: {
-            Authorization: `Basic ${Buffer.from(`${env.MUX_ACCESS_TOKEN_ID}:${env.MUX_SECRET_KEY}`).toString('base64')}`,
-            "Content-Type": "application/json"
-          }
-        }).then(async (response) => await response.json())
-        return data
-      })
-
-      await step.run('delete existing srt track from mux asset', async () => {
-        const trackId = muxAsset.tracks.filter((track: { type: string, status: string }) => track.type === 'text')[0]?.id
-        return await fetch(`https://api.mux.com/video/v1/assets/${videoResource.muxAssetId}/tracks/${trackId}`, {
-          method: 'DELETE',
-          headers: {
-            Authorization: `Basic ${Buffer.from(`${env.MUX_ACCESS_TOKEN_ID}:${env.MUX_SECRET_KEY}`).toString('base64')}`,
-            "Content-Type": "application/json"
-          }
-        }).catch((error) => {
-          console.error(error)
-        })
-      })
-
-      await step.run('add srt track to mux asset', async () => {
-        return await fetch(`https://api.mux.com/video/v1/assets/${muxAsset.id}/tracks`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Basic ${Buffer.from(`${env.MUX_ACCESS_TOKEN_ID}:${env.MUX_SECRET_KEY}`).toString('base64')}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            "url": `${env.NEXTAUTH_URL}/api/videos/${videoResource._id}/srt`,
-            "type": "text",
-            "text_type": "subtitles",
-            "closed_captions": true,
-            "language_code": "en-US",
-            "name": "English",
-            "passthrough": "English"
-          })
-        }).then(async (response) => await response.json()).catch((error) => {
-          console.error(error)
-        })
+      await step.sendEvent('announce that srt is ready', {
+        name: MUX_SRT_READY_EVENT,
+        data: {
+          videoResourceId: videoResource._id as string,
+          srt: event.data.srt,
+        }
       })
     }
 
