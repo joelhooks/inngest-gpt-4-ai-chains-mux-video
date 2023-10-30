@@ -12,25 +12,28 @@ export default defineType({
       validation: (Rule) => Rule.required(),
     }),
     defineField({
+      name: 'slug',
+      title: 'Slug',
+      type: 'slug',
+      options: {
+        source: 'title',
+        maxLength: 96,
+        isUnique: (value, context) => context.defaultIsUnique(value, context),
+      },
+      validation: (rule) => rule.required(),
+    }),
+    defineField({
       name: 'trigger',
       title: 'Trigger',
       type: 'string',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
-      name: 'accountId',
-      title: 'Account ID',
-      type: 'string',
-    }),
-    defineField({
       name: 'actions',
       title: 'Actions',
       type: 'array',
       of: [
-        {type: 'delay'},
-        {type: 'filter'},
-        {type: 'sendEmail'},
-        {type: 'slack'},
+        {type: 'prompt'}
       ],
     }),
   ],
