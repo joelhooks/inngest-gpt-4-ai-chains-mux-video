@@ -27,7 +27,7 @@ const VideoUploader = () => {
   const [formProgress, setFormProgress] = React.useState(0)
   const [playbackId, setPlaybackId] = React.useState<string>('')
   const [requestId, setRequestId] = React.useState<string>('')
-  const [generatedDraft, setGeneratedDraft] = React.useState<{title:string, description: string} | null>(null)
+  const [generatedDraft, setGeneratedDraft] = React.useState<{title:string, content: string} | null>(null)
   const [transcriptReady, setTranscriptReady] = React.useState<boolean>(false)
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -152,13 +152,13 @@ const VideoUploader = () => {
       {generatedDraft && (
         <div>
           <h2 className="text-2xl font-semibold">{generatedDraft.title}</h2>
-          <ReactMarkdown>{generatedDraft.description}</ReactMarkdown>
+          <ReactMarkdown>{generatedDraft.content}</ReactMarkdown>
           <Button onClick={() => {
             setGeneratedDraft(null)
             createPost({
               requestId,
               title: generatedDraft.title,
-              body: generatedDraft.description
+              body: generatedDraft.content
             })
           } }>Generate Post</Button>
         </div>

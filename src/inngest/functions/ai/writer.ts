@@ -1,16 +1,11 @@
 import {inngest} from "@/inngest/inngest.server"
-import {AI_WRITING_REQUESTED_EVENT} from "@/inngest/events"
+import {AI_WRITING_COMPLETED_EVENT, AI_WRITING_REQUESTED_EVENT} from "@/inngest/events"
 import {type ChatCompletionRequestMessage} from "openai-edge"
-import {promptStep} from "@/lib/prompt-step"
-import {Liquid} from 'liquidjs'
 import {sanityQuery} from "@/server/sanity.server";
 import {last} from "lodash";
+import {env} from "@/env.mjs";
+import {promptActionExecutor} from "@/lib/prompt.action-executor";
 
-const engine = new Liquid()
-
-/**
- * TODO: migrate prompts to sanity
- */
 export const writeAnEmail = inngest.createFunction(
   {id: `gpt-4-writer`, name: 'GPT-4 Writer'},
   {event: AI_WRITING_REQUESTED_EVENT},
@@ -27,31 +22,39 @@ export const writeAnEmail = inngest.createFunction(
       switch (action._type) {
         case 'prompt':
           messages = await step.run(action.title, async () => {
-            if(action.role === 'system') {
-              return [...messages, {role: action.role, content: action.content}]
-            } else {
-              const nonSystemMessages = messages.filter(message => message.role !== 'system')
-              const input = last(nonSystemMessages)?.content || event.data.input.input
-              const content = await engine.parseAndRender(
-                action.content, {
-                  input
-                })
-              const userMessage = {
-                role: action.role,
-                ...(action.name && {name: action.name}),
-                ...(action.content && {content}),
-              }
-              messages = [...messages, userMessage]
-              return [...messages, await promptStep({
-                requestId: event.data.requestId, promptMessages: messages
-              })]
-            }
+            return await promptActionExecutor({
+              action, input: event.data.input.input,
+              requestId: event.data.requestId,
+              messages
+            })
           })
           break
         default:
           shouldContinue = false
       }
     }
+
+    await step.sendEvent('announce completion', {
+      name: AI_WRITING_COMPLETED_EVENT,
+      data: {
+        requestId: event.data.requestId,
+        result: last(messages),
+        fullPrompt: messages
+      }
+    })
+
+    await step.run('announce draft completed', async () => {
+      await fetch(`${env.NEXT_PUBLIC_PARTY_KIT_URL}/party/${env.NEXT_PUBLIC_PARTYKIT_ROOM_NAME}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          body: last(messages),
+          requestId: event.data.requestId,
+          name: 'ai.draft.completed',
+        }),
+      }).catch((e) => {
+        console.error(e);
+      })
+    })
 
     return {workflow, messages}
   },
