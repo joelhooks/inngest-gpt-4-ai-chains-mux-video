@@ -48,12 +48,12 @@ export const transcriptRequested = inngest.createFunction(
         }),
       })
 
-      return await deepgramResponse.json()
+      return {deepgramResponse: await deepgramResponse.json(), postedUrl: `${deepgramUrl}?${deepgramParams.toString()}`}
     })
 
     return {
       ...event.data,
-      deepgramResponse
+      ...deepgramResponse
     }
   }
 )
