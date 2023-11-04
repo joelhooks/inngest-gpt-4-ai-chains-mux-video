@@ -34,7 +34,7 @@ export const transcriptRequested = inngest.createFunction(
         paragraphs: 'true',
         utterances: 'true',
         utt_split: String(utteranceSpiltThreshold),
-        callback: `${env.NEXTAUTH_URL}/api/deepgram/webhook?${callbackParams.toString()}`,
+        callback: `${env.UPLOADTHING_URL}/api/deepgram/webhook?${callbackParams.toString()}`,
       })
 
       const deepgramResponse = await fetch(`${deepgramUrl}?${deepgramParams.toString()}`, {

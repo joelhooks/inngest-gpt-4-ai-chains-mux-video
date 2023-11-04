@@ -49,6 +49,7 @@ export const env = createEnv({
     AWS_VIDEO_UPLOAD_REGION: z.string(),
     AWS_VIDEO_UPLOAD_ACCESS_KEY_ID: z.string(),
     AWS_VIDEO_UPLOAD_SECRET_ACCESS_KEY: z.string(),
+    UPLOADTHING_URL: z.string(),
   },
 
   /**
@@ -92,7 +93,8 @@ export const env = createEnv({
     AWS_VIDEO_UPLOAD_BUCKET: process.env.AWS_VIDEO_UPLOAD_BUCKET,
     AWS_VIDEO_UPLOAD_REGION: process.env.AWS_VIDEO_UPLOAD_REGION,
     AWS_VIDEO_UPLOAD_ACCESS_KEY_ID: process.env.AWS_VIDEO_UPLOAD_ACCESS_KEY_ID,
-    AWS_VIDEO_UPLOAD_SECRET_ACCESS_KEY: process.env.AWS_VIDEO_UPLOAD_SECRET_ACCESS_KEY
+    AWS_VIDEO_UPLOAD_SECRET_ACCESS_KEY: process.env.AWS_VIDEO_UPLOAD_SECRET_ACCESS_KEY,
+    UPLOADTHING_URL: process.env.UPLOADTHING_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
