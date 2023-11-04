@@ -5,6 +5,7 @@ import {sanityQuery} from "@/server/sanity.server";
 import {last} from "lodash";
 import {env} from "@/env.mjs";
 import {promptActionExecutor} from "@/lib/prompt.action-executor";
+import {titles} from "@/inngest/functions/ai/titles";
 
 export const writeAnEmail = inngest.createFunction(
   {id: `gpt-4-writer`, name: 'GPT-4 Writer'},
@@ -23,7 +24,7 @@ export const writeAnEmail = inngest.createFunction(
         case 'prompt':
           messages = await step.run(action.title, async () => {
             return await promptActionExecutor({
-              action, input: event.data.input.input,
+              action, input: `${event.data.input.input}\n\n ## Examples of Good Video Titles\n\n* ${titles.join('\n * ')}`,
               requestId: event.data.requestId,
               messages
             })

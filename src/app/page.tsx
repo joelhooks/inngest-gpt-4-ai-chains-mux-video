@@ -6,6 +6,7 @@ import * as React from "react";
 import {redirect} from "next/navigation";
 import VideoUploader from "@/components/video-uploader";
 import {ChatResponse} from "@/app/_components/chat-response";
+import { UploadButton } from "@/utils/uploadthing";
 
 export const metadata: Metadata = {
   title: "Media Processing Workflow",
@@ -30,6 +31,8 @@ export default async function PlaygroundPage() {
         <div className="container h-full py-6">
           <div className="grid h-full items-stretch gap-6 md:grid-cols-[1fr_200px]">
             <div className="md:order-1">
+
+
 
                 <VideoUploader />
 

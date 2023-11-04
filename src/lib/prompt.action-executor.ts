@@ -32,8 +32,8 @@ export async function promptActionExecutor(options: {
       ...(action.name && {name: action.name}),
       ...(action.content && {content}),
     } as ChatCompletionRequestMessage
-    return [...messages, await promptStep({
+    return await promptStep({
       requestId, promptMessages: [...messages, userMessage]
-    })]
+    })
   }
 }

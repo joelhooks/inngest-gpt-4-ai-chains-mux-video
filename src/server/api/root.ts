@@ -1,5 +1,4 @@
 import { createTRPCRouter } from "@/server/api/trpc";
-import {videoResourceRouter} from "@/server/api/routers/videoResource";
 import {postRouter} from "@/server/api/routers/post";
 
 /**
@@ -8,7 +7,6 @@ import {postRouter} from "@/server/api/routers/post";
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
-  videoResource: videoResourceRouter,
   post: postRouter
 });
 

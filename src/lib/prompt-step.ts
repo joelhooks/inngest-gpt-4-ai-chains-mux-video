@@ -9,6 +9,12 @@ const openai = new OpenAIApi(config)
 type PromptStepOptions = {requestId: string, promptMessages: ChatCompletionRequestMessage[]}
 
 export async function promptStep({requestId, promptMessages}: PromptStepOptions) {
+  // console.log('--------')
+  // console.log()
+  // console.log('promptMessages', promptMessages)
+  // console.log()
+  // console.log()
+  // console.log('--------')
   const writer: ProgressWriter = new OpenAIStreamingDataPartykitChunkPublisher(requestId);
   let result
   const response = await openai.createChatCompletion({
@@ -16,6 +22,8 @@ export async function promptStep({requestId, promptMessages}: PromptStepOptions)
     stream: true,
     model: env.OPENAI_MODEL_ID
   })
+
+  // console.log({response})
 
   if (response.status >= 400) {
     result = await response.json();
@@ -35,5 +43,7 @@ export async function promptStep({requestId, promptMessages}: PromptStepOptions)
     await writer.publishMessage(`\n\n`);
   }
 
-  return result as ChatCompletionRequestMessage
+  console.log(result)
+
+  return [...promptMessages, result as ChatCompletionRequestMessage]
 }

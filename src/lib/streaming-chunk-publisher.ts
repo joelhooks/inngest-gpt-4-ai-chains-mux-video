@@ -55,6 +55,8 @@ export class OpenAIStreamingDataPartykitChunkPublisher {
   async appendToBufferAndPublish(text: string) {
     let resolve = (_val?: any) => {};
 
+    console.log('text', text)
+
     this.buffer.contents += text;
 
     if (this.buffer.signal) {
@@ -108,16 +110,21 @@ const parseStreamToText = async (
 ): Promise<AIOutput> => {
   // And then pass this through the standard text response
   const text = await new StreamingTextResponse(stream).text();
-  try {
-    const raw = JSON.parse(text) as Record<string, any>;
-    const output = {
-      role: "assistant",
-      content: null,
-      ...raw,
-    } as unknown;
-    return output as AIMessage;
-  } catch (e) {
-    // This may not be JSON
-    return { role: "assistant", content: text };
-  }
+  return { role: "assistant", content: text }
+
+  // if we are function calling we want JSON!
+  // try {
+  //   const raw = JSON.parse(text) as Record<string, any>;
+  //
+  //   console.log('raw', raw)
+  //   const output = {
+  //     role: "assistant",
+  //     content: null,
+  //     ...raw,
+  //   } as unknown;
+  //   return output as AIMessage;
+  // } catch (e) {
+  //   // This may not be JSON
+  //   return { role: "assistant", content: text };
+  // }
 };
