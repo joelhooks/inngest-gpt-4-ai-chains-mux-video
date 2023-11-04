@@ -16,8 +16,8 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "Inngest GPT-4 Email Generation",
-  description: "Demo of Chained GPT-4 Email Generation",
+  title: "Course Builder POC",
+  description: "Course building workflows in the cloud 🌦️",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
