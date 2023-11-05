@@ -28,13 +28,16 @@ export const transcriptRequested = inngest.createFunction(
         videoResourceId: event.data.videoResourceId,
       })
 
+      // just weird URL differences between dev and prod
+      const callbackBase = env.NODE_ENV === 'production' ? env.UPLOADTHING_URL : env.NEXTAUTH_URL
+
       const deepgramParams = new URLSearchParams({
         model: 'whisper-large',
         punctuate: 'true',
         paragraphs: 'true',
         utterances: 'true',
         utt_split: String(utteranceSpiltThreshold),
-        callback: `${env.UPLOADTHING_URL}/api/deepgram/webhook?${callbackParams.toString()}`,
+        callback: `${callbackBase}/api/deepgram/webhook?${callbackParams.toString()}`,
       })
 
       const deepgramResponse = await fetch(`${deepgramUrl}?${deepgramParams.toString()}`, {

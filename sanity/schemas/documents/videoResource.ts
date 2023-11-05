@@ -12,6 +12,7 @@ export default {
       name: 'title',
       title: 'Title',
       type: 'string',
+      readOnly: true,
     },
     defineField({
       name: 'state',
@@ -35,15 +36,7 @@ export default {
       title: 'Original Media Url',
       description: 'A URL to the source video on the Internet',
       type: 'url',
-    },
-    {
-      name: 'slug',
-      title: 'Slug',
-      type: 'slug',
-      options: {
-        source: 'title',
-        maxLength: 96,
-      },
+      readOnly: true,
     },
     {
       name: 'duration',
@@ -56,18 +49,14 @@ export default {
       title: 'Mux Playback ID',
       description: 'Hashed ID of a video on mux',
       type: 'string',
-    },
-    {
-      name: 'muxUploadId',
-      title: 'Mux Upload ID',
-      description: 'Upload ID when directly uploaded to Mux.',
-      type: 'string',
+      readOnly: true,
     },
     {
       name: 'muxAssetId',
       title: 'Mux Asset ID',
       description: 'ID that references the asset in Mux.',
       type: 'string',
+      readOnly: true,
     },
     defineField({
       name: 'transcript',

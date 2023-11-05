@@ -8,7 +8,7 @@ import {env} from "@/env.mjs";
 import {ChatResponse} from "@/app/_components/chat-response";
 import MuxPlayer from "@mux/mux-player-react";
 import ReactMarkdown from "react-markdown";
-import {UploadButton} from "@/utils/uploadthing";
+import {UploadDropzone} from "@/utils/uploadthing";
 import {getUniqueFilename} from "@/lib/get-unique-filename";
 
 const VideoUploader = () => {
@@ -18,7 +18,7 @@ const VideoUploader = () => {
   return (
     <div className="grid h-full gap-6 lg:grid-cols-2">
     <div className="flex flex-col space-y-4">
-      <UploadButton
+      <UploadDropzone
         endpoint="videoUploader"
         onBeforeUploadBegin={(files) => {
           console.log(files.map((file) => new File([file], getUniqueFilename(file.name), {type: file.type})))
@@ -27,7 +27,7 @@ const VideoUploader = () => {
         onClientUploadComplete={(res) => {
           // Do something with the response
           console.log("Files: ", res);
-          setRequestIds((requestIds) => [...requestIds, res?.[0]?.name || ''])
+          setRequestIds((requestIds) => [...requestIds, ...res?.map(file => file.name) || 'error'])
         }}
         onUploadError={(error: Error) => {
           // Do something with the error.
